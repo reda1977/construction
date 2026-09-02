@@ -28,11 +28,19 @@ app_license = "MIT"
 # The fix is to list plain "app.module.function" paths; the function is
 # then exposed in Jinja under its real name (construction.fatoora.getqrcode
 # is still called as getqrcode(...) in print formats since that's its
-# actual function name, and construction.test.test's function is named
-# "test", not "testbaaa").
+# actual function name).
+#
+# construction.test.test itself is also removed here: resolving it forces
+# a full import of construction/test.py, which pulls in a long chain of
+# third-party packages (dateutil, babel, num2words, six, html2text,
+# markdown2, ...) at module load time. None of those are declared in
+# requirements.txt, and on this server html2text is not installed, so
+# importing that module crashed every page again even after the
+# jenv->jinja / colon-syntax fix. Nothing in this app actually calls
+# testbaaa(...)/test(...) from a template, so it's dropped rather than
+# fixing its whole dependency chain under production pressure.
 jinja = {
 	"methods": [
-		"construction.test.test",
 		"construction.fatoora.getqrcode",
 		#"today_hijri:frappe.utils.today_hijri","to_hijri:frappe.utils.to_hijri"
 	]
