@@ -12,7 +12,13 @@ app_license = "MIT"
 # Includes in <head>
 # ------------------
 
-jenv ={
+# NOTE: Frappe reads custom Jinja methods/filters from the "jinja" hook
+# (see frappe.utils.jinja.get_jinja_hooks()), not "jenv". The old key name
+# below was silently ignored, so getqrcode() was never registered in the
+# Jinja/PDF rendering environment -- every print format calling
+# getqrcode(doc.doctype, doc) (e.g. to render the ZATCA QR code) failed
+# with "'getqrcode' is undefined".
+jinja = {
 	"methods": ["testbaaa:construction.test.test",
 "getqrcode:construction.fatoora.getqrcode",
 #"today_hijri:frappe.utils.today_hijri","to_hijri:frappe.utils.to_hijri"
