@@ -96,7 +96,7 @@ class Fatoora:
         tax_number: str,
         invoice_date: float,
         total_amount: float,
-        tax_amount: str,
+        tax_amount: float,
         qrcode_url: Optional[str] = None,
         tags: TLV = TLV(),
     ):
@@ -204,12 +204,12 @@ class Fatoora:
         self.tags[0x04] = str(new_value)
 
     @property
-    def tax_amount(self) -> str:
+    def tax_amount(self) -> float:
         return float(self.tags[5])
 
     @tax_amount.setter
     @validate_arguments
-    def tax_amount(self, new_value: str) -> None:
+    def tax_amount(self, new_value: float) -> None:
         self.tags[0x05] = str(new_value)
 
     @property
