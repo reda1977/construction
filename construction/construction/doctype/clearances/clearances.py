@@ -147,16 +147,27 @@ class Clearances(Document):
 					"credit_in_account_currency": abs(round(c_tax_amount,2)),
 					"user_remark": self.name
 				})
-			if total_debit!=total_credit:
+			# Compare rounded totals (not raw floats): summing many already-rounded
+			# amounts can leave floating point dust (e.g. 1e-13) that makes
+			# `total_debit != total_credit` true even though the real difference
+			# is zero SAR. That used to add a spurious round-off row with an
+			# amount that rounds to 0.00, which ERPNext's Journal Entry
+			# validation correctly rejects ("Both Debit and Credit values
+			# cannot be zero"). Rounding the difference before comparing/using
+			# it fixes both the false positive and the row's amount.
+			rounding_diff = round(total_debit - total_credit, 2)
+			if rounding_diff != 0:
 				round_off_account = frappe.db.get_value("Company", self.company, "round_off_account")
-				if total_debit>total_credit:
+				if not round_off_account:
+					frappe.throw(_("Please set a Round Off Account for company {0} to submit this Clearance (there is a rounding difference of {1}).").format(self.company, rounding_diff))
+				if rounding_diff>0:
 					accounts.append({
 					"doctype": "Journal Entry Account",
 					"account": round_off_account,
 					"project": self.project,
 					"debit": 0,
-					"credit": total_debit-total_credit,
-					"credit_in_account_currency": total_debit-total_credit,
+					"credit": rounding_diff,
+					"credit_in_account_currency": rounding_diff,
 					"user_remark": self.name
 				})
 				else:
@@ -164,9 +175,9 @@ class Clearances(Document):
 						"doctype": "Journal Entry Account",
 						"account": round_off_account,
 						"project": self.project,
-						"debit": total_debit-total_credit,
+						"debit": abs(rounding_diff),
 						"credit":0,
-						"debit_in_account_currency": total_debit-total_credit,
+						"debit_in_account_currency": abs(rounding_diff),
 						"user_remark": self.name
 					})
 
@@ -328,7 +339,7 @@ class Clearances(Document):
 				po_item.completed_amount = item.amount
 
 	def validate(self):
-		pass
+		self.sync_taxes_and_item_tax_rate()
 		# total_current_amount=0
 		# total_c_percentage=0
 		# for item in self.items:
@@ -361,9 +372,68 @@ class Clearances(Document):
 		# for item in self.items:
 		# 	item.tax_rate=tax_rate
 		# 	item.tax_amount=round((item.c_amount/100)*item.tax_rate,2)
-		#Callcualte Tax Amount for Zatca		
+		#Callcualte Tax Amount for Zatca
 
-		
+
+
+	def sync_taxes_and_item_tax_rate(self):
+		"""
+		Server-side safety net for the tax rate/amount that clearances.js
+		normally computes client-side (function fix()).
+
+		This app was submitting invoices where the "Clearance Taxes Table"
+		child table was empty even though "Sales/Purchase Taxes and Charges
+		Template" was set on the document (e.g. because the template was
+		selected before the linked Sales/Purchase Order populated the items,
+		or the field's on-change handler simply never re-fired for that
+		session). Every item's tax_rate/tax_amount then silently stayed at 0,
+		which either produced a wrong (untaxed) ZATCA invoice, or blocked
+		submission entirely with "item ... is missing vat category as it's
+		zero taxed." from before_submit().
+
+		This does not touch item.c_amount (the taxable base after
+		deductions) - that is still computed by clearances.js. It only makes
+		sure the tax rate that's supposed to apply is actually applied,
+		regardless of whether the browser-side script ran.
+		"""
+		if self.clearance_type == "Outgoing":
+			template_doctype = "Sales Taxes and Charges Template"
+			template_name = self.sales_taxes_and_charges_template
+		elif self.clearance_type == "Incoming":
+			template_doctype = "Purchase Taxes and Charges Template"
+			template_name = self.purchase_taxes_and_charges_template
+		else:
+			return
+
+		if not template_name:
+			return
+
+		if not self.taxes:
+			template = frappe.get_cached_doc(template_doctype, template_name)
+			for tax in template.taxes:
+				self.append("taxes", {
+					"charge_type": tax.charge_type,
+					"account_head": tax.account_head,
+					"description": tax.description,
+					"rate": tax.rate,
+					"tax_amount": 0,
+					"total": 0,
+				})
+
+		if not self.taxes:
+			return
+
+		rate = flt(self.taxes[0].rate)
+
+		for item in self.items:
+			if flt(item.c_amount) == 0:
+				continue
+			if flt(item.tax_rate) != rate:
+				item.tax_rate = rate
+			expected_tax_amount = round((flt(item.c_amount) / 100) * rate, 2)
+			if abs(flt(item.tax_amount) - expected_tax_amount) > 0.01:
+				item.tax_amount = expected_tax_amount
+				item.total_amount = round(flt(item.c_amount) + expected_tax_amount, 2)
 
 	@frappe.whitelist()
 	def add_po_taxes_in_table(self, table_value, table_name):
