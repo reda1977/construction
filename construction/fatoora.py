@@ -13,11 +13,36 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from pydantic import validate_arguments
 import validators
-from datetime import datetime
+from datetime import datetime, timedelta
 
 __all__ = ("Fatoora", "iso8601_zulu_format", "is_valid_iso8601_zulu_format")
 
 iso8601_zulu_format = "%Y-%m-%dT%H:%M:%SZ"
+
+
+def _time_to_hms(time_value):
+    """Normalize a Frappe "Time" field value (a datetime.timedelta when
+    read off a loaded Document, but sometimes a "HH:MM:SS[.ffffff]"
+    string) into an (hour, minute, second) tuple."""
+    if isinstance(time_value, timedelta):
+        total_seconds = int(time_value.total_seconds())
+        return total_seconds // 3600 % 24, total_seconds // 60 % 60, total_seconds % 60
+    hour, minute, second = str(time_value).split(".")[0].split(":")
+    return int(hour), int(minute), int(second)
+
+
+def _to_iso8601_zulu(date_value, time_value=None):
+    """Build the "YYYY-MM-DDTHH:MM:SSZ" string Fatoora.invoice_date
+    requires. The previous code built "YYYY-MM-DD HH:MM:SS" (space
+    instead of "T", no "Z"), which is not valid ISO 8601 and made every
+    QR code / print format that called getqrcode() fail with
+    "Invalid date format: ... should be iso8601 format or timestamp or
+    datetime object".
+    """
+    year, month, day = (int(p) for p in str(date_value).split(" ")[0].split("-"))
+    hour, minute, second = (12, 0, 0) if time_value is None else _time_to_hms(time_value)
+    return datetime(year, month, day, hour, minute, second).strftime(iso8601_zulu_format)
+
 
 def getqrcode(doctype,doc):
     if doc.doctype=="Sales Invoice":
@@ -25,7 +50,7 @@ def getqrcode(doctype,doc):
         if not tax_id :
             tax_id =""
         company=doc.company
-        date= str(doc.posting_date)+" "+str(doc.posting_time)
+        date = _to_iso8601_zulu(doc.posting_date, doc.posting_time)
         total = doc.grand_total
         tax=doc.total_taxes_and_charges
     if doc.doctype=="Clearances":
@@ -33,11 +58,11 @@ def getqrcode(doctype,doc):
         if not tax_id :
             tax_id =""
         company=doc.company
-        date= str(doc.clearance_date)+" 12:00:00"
+        date = _to_iso8601_zulu(doc.clearance_date)
         total = doc.net_amount
         tax=doc.vat
 
-        
+
     fatoora_obj = Fatoora(
     seller_name=company,
     tax_number= tax_id,
