@@ -1,0 +1,316 @@
+{
+ "actions": [],
+ "creation": "2021-07-03 20:24:15.991193",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "item_code",
+  "item_name",
+  "description",
+  "column_break_4",
+  "uom",
+  "qty",
+  "rate",
+  "amount",
+  "current_section",
+  "current_qty",
+  "current_progress",
+  "column_break_10",
+  "current_amount",
+  "c_amount",
+  "previous_section",
+  "previous_qty",
+  "previous_progress",
+  "column_break_14",
+  "previous_amount",
+  "completed_section",
+  "completed_qty",
+  "completed_progress",
+  "column_break_18",
+  "completed_amount",
+  "remaining_section",
+  "remaining_qty",
+  "remaining_progress",
+  "column_break_22",
+  "remaining_amount",
+  "custom_vat_category",
+  "is_exempt",
+  "is_zero_rated",
+  "delivery_date",
+  "total_amount",
+  "tax_amount",
+  "tax_rate",
+  "tax_code"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Clearance Item Name",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Clearance Rate",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "current_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Current Qty",
+   "no_copy": 1,
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "current_amount",
+   "fieldtype": "Currency",
+   "label": "Current Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "previous_qty",
+   "fieldtype": "Float",
+   "label": "Previous Qty",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "previous_amount",
+   "fieldtype": "Currency",
+   "label": "Previous Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "completed_qty",
+   "fieldtype": "Float",
+   "label": "Completed Qty",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "completed_amount",
+   "fieldtype": "Currency",
+   "label": "Completed Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "remaining_qty",
+   "fieldtype": "Float",
+   "label": "Remaining Qty",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "remaining_amount",
+   "fieldtype": "Currency",
+   "label": "Remaining Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_section",
+   "fieldtype": "Section Break",
+   "label": "Current",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "previous_section",
+   "fieldtype": "Section Break",
+   "label": "Previous"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "completed_section",
+   "fieldtype": "Section Break",
+   "label": "Completed "
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remaining_section",
+   "fieldtype": "Section Break",
+   "label": "Remaining"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Clearance Item",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_progress",
+   "fieldtype": "Percent",
+   "label": "Current Progress (%)",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "previous_progress",
+   "fieldtype": "Percent",
+   "label": "Previous Progress (%)",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "completed_progress",
+   "fieldtype": "Percent",
+   "label": "Completed Progress (%)",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "remaining_progress",
+   "fieldtype": "Percent",
+   "label": "Remaining Progress (%)",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "c_amount",
+   "fieldtype": "Float",
+   "label": "C Amount",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.custom_vat_category",
+   "fieldname": "custom_vat_category",
+   "fieldtype": "Link",
+   "label": "vat category",
+   "options": "VAT category"
+  },
+  {
+   "default": "0",
+   "fetch_from": "item_code.is_exempt",
+   "fieldname": "is_exempt",
+   "fieldtype": "Check",
+   "label": "Is Exempt"
+  },
+  {
+   "default": "0",
+   "fetch_from": "item_code.is_zero_rated",
+   "fieldname": "is_zero_rated",
+   "fieldtype": "Check",
+   "label": "Is Zero Rated"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "label": "Tax Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tax_rate",
+   "fieldtype": "Float",
+   "label": "Tax Rate",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tax_code",
+   "fieldtype": "Data",
+   "label": "Tax Code",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-29 16:26:49.302949",
+ "modified_by": "Administrator",
+ "module": "Construction",
+ "name": "Clearance Items Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,626 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2021-07-03 20:13:39.415463",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "clearance_details_section",
+  "naming_series",
+  "company",
+  "clearance_name",
+  "clearance_no",
+  "is_return",
+  "column_break_6",
+  "clearance_date",
+  "posting_time",
+  "clearance_type",
+  "amended_from",
+  "column_break_9",
+  "total_current_amount",
+  "advanced_payment_insurance_amount",
+  "initial_delivery_payment_insurance_amount",
+  "total_paid_amount",
+  "additional_discount",
+  "sales_order_details_section",
+  "sales_order",
+  "customer",
+  "column_break_12",
+  "sales_order_date",
+  "delivery_date",
+  "accounting_dimensions_section",
+  "project",
+  "23_column",
+  "cost_center",
+  "purchase_order_details_section",
+  "purchase_order",
+  "supplier",
+  "column_break_18",
+  "purchase_order_date",
+  "required_by_date",
+  "section_break_22",
+  "advanced_payment_insurance_rate",
+  "initial_delivery_payment_insurance_rate",
+  "column_break_25",
+  "clearance_items_section",
+  "items",
+  "taxes_section",
+  "sales_taxes_and_charges_template",
+  "purchase_taxes_and_charges_template",
+  "taxes",
+  "total_taxes_amount",
+  "deduction_section",
+  "deductions_table",
+  "total_deduction_amount",
+  "notes_section",
+  "notes1",
+  "zatca_section",
+  "ksa_einv_qr",
+  "customer_name_in_arabic",
+  "company_trn",
+  "custom_pih",
+  "custom_reporting_to_zatka_time",
+  "custom_reason",
+  "custom_clearing_to_zatka_time",
+  "currency",
+  "conversion_rate",
+  "customer_address",
+  "is_debit_note",
+  "column_break_g8spi",
+  "custom_zatca_warnings",
+  "zatca_status",
+  "simple",
+  "qr_code_text",
+  "hash",
+  "signed",
+  "uuid",
+  "xml_path",
+  "permit_no",
+  "return_against"
+ ],
+ "fields": [
+  {
+   "fieldname": "clearance_details_section",
+   "fieldtype": "Section Break",
+   "label": "Clearance Details"
+  },
+  {
+   "default": "ACC-SINV-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "ACC-SINV-.YYYY.-",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "clearance_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Clearance Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "clearance_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Clearance No",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.sales_order || doc.purchase_order",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "mandatory_depends_on": "eval:doc.sales_order || doc.purchase_order",
+   "options": "Project"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Clearance Date ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "clearance_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Clearance Type",
+   "options": "\nIncoming\nOutgoing",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.clearance_type == \"Outgoing\"",
+   "fieldname": "sales_order_details_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Order Details"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Sales Order",
+   "mandatory_depends_on": "eval:doc.clearance_type == \"Outgoing\"",
+   "options": "Sales Order"
+  },
+  {
+   "fetch_from": "sales_order.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sales_order.transaction_date",
+   "fieldname": "sales_order_date",
+   "fieldtype": "Date",
+   "label": "Sales Order Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.delivery_date",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.clearance_type == \"Incoming\"",
+   "fieldname": "purchase_order_details_section",
+   "fieldtype": "Section Break",
+   "label": "Purchase Order Details"
+  },
+  {
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Purchase Order",
+   "mandatory_depends_on": "eval:doc.clearance_type == \"Incoming\"",
+   "options": "Purchase Order"
+  },
+  {
+   "fetch_from": "purchase_order.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "purchase_order.transaction_date",
+   "fieldname": "purchase_order_date",
+   "fieldtype": "Date",
+   "label": "Purchase Order Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "purchase_order.schedule_date",
+   "fieldname": "required_by_date",
+   "fieldtype": "Date",
+   "label": "Required By Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Clearances",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.purchase_order || doc.sales_order",
+   "fieldname": "clearance_items_section",
+   "fieldtype": "Section Break",
+   "label": "Clearance Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Clearance Items",
+   "options": "Clearance Items Table"
+  },
+  {
+   "depends_on": "eval:doc.purchase_order || doc.sales_order",
+   "fieldname": "taxes_section",
+   "fieldtype": "Section Break",
+   "label": "Taxes"
+  },
+  {
+   "fieldname": "advanced_payment_insurance_rate",
+   "fieldtype": "Percent",
+   "label": "Advanced Payment Insurance Rate (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "initial_delivery_payment_insurance_rate",
+   "fieldtype": "Percent",
+   "label": "Initial Delivery Payment Insurance Rate (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_22",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_current_amount",
+   "fieldtype": "Currency",
+   "label": "Total Current Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.clearance_type == \"Outgoing\"",
+   "fieldname": "sales_taxes_and_charges_template",
+   "fieldtype": "Link",
+   "label": "Sales Taxes and Charges Template",
+   "mandatory_depends_on": "eval:doc.clearance_type == \"Outgoing\"",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "depends_on": "eval:doc.clearance_type == \"Incoming\"",
+   "fieldname": "purchase_taxes_and_charges_template",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "mandatory_depends_on": "eval:doc.clearance_type == \"Incoming\"",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "taxes",
+   "fieldtype": "Table",
+   "label": "Clearance Taxes Table",
+   "options": "Clearance Taxes Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advanced_payment_insurance_amount",
+   "fieldtype": "Currency",
+   "label": "Advanced Payment Insurance Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "initial_delivery_payment_insurance_amount",
+   "fieldtype": "Currency",
+   "label": "Initial Delivery Payment Insurance Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_taxes_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount After Tax",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_paid_amount",
+   "fieldtype": "Currency",
+   "label": "Total Paid Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "deduction_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction"
+  },
+  {
+   "fieldname": "deductions_table",
+   "fieldtype": "Table",
+   "label": "Deductions Table",
+   "options": "Payment Entry Deduction"
+  },
+  {
+   "fieldname": "total_deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Total Deduction Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.sales_order || doc.purchase_order",
+   "fieldname": "accounting_dimensions_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting Dimensions"
+  },
+  {
+   "depends_on": "eval:doc.sales_order || doc.purchase_order",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "23_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "additional_discount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Additional Discount"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "notes1",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_return",
+   "fieldtype": "Check",
+   "label": "Is return"
+  },
+  {
+   "fieldname": "zatca_section",
+   "fieldtype": "Section Break",
+   "label": "Zatca"
+  },
+  {
+   "fieldname": "ksa_einv_qr",
+   "fieldtype": "Attach Image",
+   "label": "KSA E-Invoicing QR",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "customer.customer_name_in_arabic",
+   "fieldname": "customer_name_in_arabic",
+   "fieldtype": "Data",
+   "label": "Customer Name in Arabic",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "company.tax_id",
+   "fieldname": "company_trn",
+   "fieldtype": "Data",
+   "label": "Company TRN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "custom_pih",
+   "fieldtype": "Data",
+   "label": "pih",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "custom_reporting_to_zatka_time",
+   "fieldtype": "Datetime",
+   "label": "Reporting to zatka time",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_return",
+   "fieldname": "custom_reason",
+   "fieldtype": "Data",
+   "label": "Credit/Debit Note Reason",
+   "mandatory_depends_on": "eval:doc.is_return",
+   "no_copy": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "custom_clearing_to_zatka_time",
+   "fieldtype": "Datetime",
+   "label": "Clearing To Zatca Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_g8spi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "custom_zatca_warnings",
+   "fieldtype": "Text",
+   "label": "Zatca Warnings / Errors",
+   "read_only": 1,
+   "translatable": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "zatca_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Zatca Status",
+   "options": "Draft\nPending\nReported\nCleared\nReported with warnings\nCleared with warnings\nRejected\nOverdue\nCancelled",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "simple",
+   "fieldtype": "Check",
+   "label": "Is Simple Invoice",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "qr_code_text",
+   "fieldtype": "Long Text",
+   "label": "QR_code_text",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "hash",
+   "fieldtype": "Data",
+   "label": "hash",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "signed",
+   "fieldtype": "Check",
+   "label": "signed",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "uuid",
+   "fieldtype": "Data",
+   "label": "Universal ID",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "xml_path",
+   "fieldtype": "Data",
+   "label": "xml_path",
+   "no_copy": 1,
+   "read_only": 1,
+   "translatable": 1
+  },
+  {
+   "fieldname": "permit_no",
+   "fieldtype": "Data",
+   "label": "Permit Number",
+   "no_copy": 1,
+   "read_only": 1,
+   "translatable": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time",
+   "reqd": 1
+  },
+  {
+   "default": "SAR",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "no_copy": 1,
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "customer.customer_primary_address",
+   "fieldname": "customer_address",
+   "fieldtype": "Data",
+   "label": "Customer Address",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_debit_note",
+   "fieldtype": "Check",
+   "label": "Is Rate Adjustment Entry (Debit Note)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "return_against",
+   "fieldtype": "Link",
+   "label": "Return Against",
+   "mandatory_depends_on": "eval:doc.is_return",
+   "no_copy": 1,
+   "options": "Clearances"
+  },
+  {
+   "default": "1",
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "label": "Exchange Rate",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Journal Entry",
+   "link_fieldname": "reference_link"
+  }
+ ],
+ "modified": "2024-05-29 16:32:59.975342",
+ "modified_by": "Administrator",
+ "module": "Construction",
+ "name": "Clearances",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "clearance_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}
