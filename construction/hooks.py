@@ -13,17 +13,29 @@ app_license = "MIT"
 # ------------------
 
 # NOTE: Frappe reads custom Jinja methods/filters from the "jinja" hook
-# (see frappe.utils.jinja.get_jinja_hooks()), not "jenv". The old key name
-# below was silently ignored, so getqrcode() was never registered in the
-# Jinja/PDF rendering environment -- every print format calling
-# getqrcode(doc.doctype, doc) (e.g. to render the ZATCA QR code) failed
-# with "'getqrcode' is undefined".
+# (see frappe.utils.jinja.get_jinja_hooks()), not "jenv" -- the old key
+# name was silently ignored, so getqrcode() was never registered in the
+# Jinja/PDF rendering environment and print formats calling
+# getqrcode(doc.doctype, doc) failed with "'getqrcode' is undefined".
+#
+# Also: get_jinja_hooks() -> get_obj_dict_from_paths() takes plain dotted
+# import paths and registers each callable under its own __name__ -- it
+# does NOT understand the "alias:dotted.path" colon syntax. Passing
+# "testbaaa:construction.test.test" makes Frappe try to import a module
+# literally named "testbaaa:construction.test.test", which fails and
+# raises AppNotInstalledError -- crashing every single page on the site
+# (this is what took the whole site down after the jenv->jinja rename).
+# The fix is to list plain "app.module.function" paths; the function is
+# then exposed in Jinja under its real name (construction.fatoora.getqrcode
+# is still called as getqrcode(...) in print formats since that's its
+# actual function name, and construction.test.test's function is named
+# "test", not "testbaaa").
 jinja = {
-	"methods": ["testbaaa:construction.test.test",
-"getqrcode:construction.fatoora.getqrcode",
-#"today_hijri:frappe.utils.today_hijri","to_hijri:frappe.utils.to_hijri"
-]
-
+	"methods": [
+		"construction.test.test",
+		"construction.fatoora.getqrcode",
+		#"today_hijri:frappe.utils.today_hijri","to_hijri:frappe.utils.to_hijri"
+	]
 }
 
 
