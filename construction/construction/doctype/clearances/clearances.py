@@ -67,6 +67,19 @@ class Clearances(Document):
 		default_cost_center = frappe.db.get_value("Company", self.company, "cost_center")
 		if self.cost_center:
 			default_cost_center=self.cost_center
+		elif not default_cost_center and self.project:
+			# Company has no default Cost Center configured. Fall back to the
+			# Project's Cost Center -- the same source already used elsewhere
+			# in this doctype (e.g. deduction rows fetched from the PO/SO)
+			# -- instead of silently posting the income/expense account
+			# without one, which ERPNext's GL Entry validation rejects for
+			# Profit and Loss accounts ("Missing Cost Center").
+			default_cost_center = frappe.db.get_value("Project", self.project, "cost_center")
+		if not default_cost_center:
+			frappe.throw(_(
+				"Cost Center is required to submit this Clearance. Please set a Cost Center "
+				"on this Clearance, on Project {0}, or set a default Cost Center for Company {1}."
+			).format(self.project, self.company))
 		tax_account = ""
 		tax_amount = 0
 		values = frappe.db.sql("""select
