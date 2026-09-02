@@ -217,7 +217,6 @@ frappe.ui.form.on('Clearances',  'purchase_order',  function(frm) {
     cur_frm.clear_table("items");
     cur_frm.clear_table("taxes");
 });
-cur_frm.clear_table("taxes");
 frappe.ui.form.on('Clearances', {
     purchase_order: function(frm) {
         if(cur_frm.doc.purchase_order){
