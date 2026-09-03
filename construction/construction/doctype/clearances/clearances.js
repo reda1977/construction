@@ -384,16 +384,25 @@ function fix(frm){
         frm.doc.deductions_table.forEach(function(ded) {
             if (ded.include_tax ==0){
                 advance += ded.amount;
-                total_percentage+=parseFloat(ded.custom_c_percentage);
             }
             else{
                 retention+=ded.amount;
-            } 
+            }
 			if (ded.type=="Advance"){
                 advance_rate+=ded.percentage;
             }
 			else{initial_rate+=ded.percentage; }
 			});
+    // Derive the deduction percentage actually applied to items straight
+    // from the deduction rows' SAR amount (advance) and the current Gross,
+    // instead of trusting each row's stored custom_c_percentage. That field
+    // is only refreshed when a user edits that row's own percentage/amount
+    // field directly (see the 'Payment Entry Deduction' handlers above) --
+    // so it goes stale as soon as an item edit changes Gross afterward,
+    // making total_amount_before_vat drift away from "Gross - advance"
+    // even though the deduction amount shown on screen hasn't changed.
+    // Recomputing here keeps them always consistent.
+    total_percentage = gross ? (advance / gross) : 0;
     frm.doc.items.forEach(function(item){
         if(total_percentage){
             frappe.model.set_value('Clearance Items Table',item.name,'c_amount',(item.current_amount-(item.current_amount*total_percentage)))
