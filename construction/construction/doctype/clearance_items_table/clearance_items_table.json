@@ -273,9 +273,11 @@
    "label": "Delivery Date"
   },
   {
+   "columns": 2,
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Total Amount",
+   "in_list_view": 1,
+   "label": "Total (Incl. VAT)",
    "options": "currency",
    "read_only": 1
   },
